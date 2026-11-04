@@ -53,3 +53,9 @@
 - **Qué se hizo:** el hilo rojo guía pasó de línea lisa a trazo de acuarela (opción C de tres maquetadas en `_borrador/hilos.html`): lavado ancho rosa diluido + línea fina de pigmento, con filtro SVG de ondulación, desenfoque y poros de papel, en multiply. Mismo dibujado con scroll y tirón. El trazo solo se repinta cuando cambia (el filtro es costoso). Probado en 375×812 y 1440×900; ~60 fps en escritorio; sin errores en consola.
 - **Quedó a medias:** prueba en iPhone real (rendimiento del filtro en celular).
 - **Commit:** este mismo commit, "Sesión: hilo guía como trazo de acuarela"
+
+## 2026-11-04 — Arreglo: pantalla negra en iPhone
+- **Tipo:** espontáneo (corrección)
+- **Qué se hizo:** en el iPhone de Armando la página se quedaba negra tras el despliegue del hilo de acuarela. Causa probable (no reproducida: esta Mac no tiene Xcode ni simulador): el filtro SVG (feTurbulence + desplazamiento + desenfoque + mezcla multiply) sobre un SVG de ~3 000 px de alto agota la memoria de la GPU del iPhone. El hilo anterior, sin filtro, sí se había visto bien en su celular. Ahora el hilo son tres trazos vectoriales (dos lavados y una línea de pigmento cortada) sin filtros ni blend; el SVG solo cubre el trazo, no toda la página, y se descubre con un rectángulo recortado. Además, la contraseña se normaliza a solo letras y dígitos (acepta mayúsculas, espacios y signos) y el SHA-256 tiene respaldo en JS puro para navegadores sin `crypto.subtle` (comprobado contra node en 11 casos).
+- **Quedó a medias:** confirmar en el iPhone de Armando que ya entra; sigue sin probarse en un iOS real.
+- **Commit:** este mismo commit, "Sesión: arreglo de pantalla negra en iPhone (hilo sin filtros)"

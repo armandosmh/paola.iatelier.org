@@ -148,12 +148,14 @@
   .abierto.leyendo .pista { opacity: 0; transition-delay: 0s; }
 
   /* Red thread from the signature down to the place; JS draws it with the scroll */
-  #hilo-guia { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; overflow: visible; will-change: transform; }
-  #hilo-guia g { mix-blend-mode: multiply; }
-  #hilo-guia path { fill: none; stroke-linecap: round; }
-  /* Watercolor stroke: a wide diluted wash plus a thin line of settled pigment */
-  #hilo-guia .lavado { stroke: #cf8a7c; stroke-width: 6; opacity: .55; }
-  #hilo-guia .pigmento { stroke: #b0594c; stroke-width: 1.6; opacity: .55; transform: translateX(1.2px); }
+  /* No SVG filters or blend modes here: on iPhones a filter over this tall area blacks out the page */
+  #hilo-guia { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; overflow: visible; }
+  #hilo-guia path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  /* Watercolor-like stroke from plain layers: two diluted washes of different width, plus a
+     thin pigment line that breaks up where the brush ran dry */
+  #hilo-guia .lavado { stroke: #cf8a7c; stroke-width: 8; opacity: .24; }
+  #hilo-guia .lavado2 { stroke: #d99a8c; stroke-width: 4.5; opacity: .30; }
+  #hilo-guia .pigmento { stroke: #a9524a; stroke-width: 1.4; opacity: .5; stroke-dasharray: 84 3 130 6 46 2 170 5 96 4 58 3 150 7; }
   .jala #hilo-guia { animation: jala 2.6s ease-in-out infinite; }
   @keyframes jala { 0%, 60%, 100% { transform: translateY(0); } 16% { transform: translateY(11px); } 30% { transform: translateY(2px); } 42% { transform: translateY(5px); } }
 
@@ -223,18 +225,11 @@
 </main>
 
 <div id="regalo">
-  <svg id="hilo-guia" aria-hidden="true">
-    <defs>
-      <filter id="acuarela-hilo" x="-30%" y="-2%" width="160%" height="104%">
-        <feTurbulence type="fractalNoise" baseFrequency=".04 .02" numOctaves="2" seed="7" result="ondas"/>
-        <feDisplacementMap in="SourceGraphic" in2="ondas" scale="5" result="corrido"/>
-        <feGaussianBlur in="corrido" stdDeviation=".7" result="suave"/>
-        <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="2" result="grano"/>
-        <feColorMatrix in="grano" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.1 1.35" result="poros"/>
-        <feComposite in="suave" in2="poros" operator="in"/>
-      </filter>
-    </defs>
-    <g filter="url(#acuarela-hilo)"><path class="lavado"/><path class="pigmento"/></g>
+  <svg id="hilo-guia" aria-hidden="true" preserveAspectRatio="none">
+    <defs><clipPath id="hilo-descubre"><rect id="hilo-rect" x="-400" y="0" width="3000" height="0"/></clipPath></defs>
+    <g clip-path="url(#hilo-descubre)">
+      <path class="lavado"/><path class="lavado2" transform="translate(2.2 0)"/><path class="pigmento" transform="translate(-0.8 0)"/>
+    </g>
   </svg>
   <article class="carta" aria-live="polite">
     <div class="tinta" style="--i:0">
@@ -479,9 +474,9 @@
   const raiz = document.documentElement;
   const carta = $(".carta"), lugar = $(".lugar"), hoja = $("#hoja"), pie = $("#pie");
   const tintas = [...document.querySelectorAll(".carta .tinta")];
-  const regalo = $("#regalo"), guia = $("#hilo-guia"), guiaPaths = [...guia.querySelectorAll("path")];
+  const regalo = $("#regalo"), guia = $("#hilo-guia"), guiaPaths = [...guia.querySelectorAll("path")], guiaRect = $("#hilo-rect");
   const firma = $(".carta .firma"), destino = $(".lugar .kicker");
-  let guiaLen = 0, guiaY0 = 0, guiaY1 = 1, guiaOffset = -1, ultimoScroll = 0;
+  let guiaListo = false, guiaY0 = 0, guiaY1 = 1, guiaTop = 0, guiaAlto = -1, ultimoScroll = 0;
   addEventListener("scroll", () => { ultimoScroll = now(); }, { passive: true });
 
   // Wavy thread from under the signature to just above "Tu misión"
@@ -500,12 +495,13 @@
       const a = i % 2 ? amp : -Math.min(amp * 0.8, Math.min(xa, xb) - 8); // never off the left edge
       d += ` C${(xa + a).toFixed(1)} ${(ya + (yb - ya) * 0.35).toFixed(1)}, ${(xb + a).toFixed(1)} ${(ya + (yb - ya) * 0.65).toFixed(1)}, ${xb.toFixed(1)} ${yb.toFixed(1)}`;
     }
-    guia.style.height = regalo.offsetHeight + "px"; // a zero-height SVG is not painted
+    // The SVG covers only the thread, not the whole page, to keep its layer small
+    const pad = 28, vy0 = y0 - pad, alto = (y1 - y0) + pad * 2;
+    guia.style.top = vy0 + "px"; guia.style.height = alto + "px";
+    guia.setAttribute("viewBox", `0 ${vy0.toFixed(1)} ${regalo.clientWidth} ${alto.toFixed(1)}`);
     for (const el of guiaPaths) el.setAttribute("d", d);
-    guiaLen = guiaPaths[0].getTotalLength();
-    for (const el of guiaPaths) el.style.strokeDasharray = `${guiaLen} ${guiaLen}`;
-    guiaOffset = -1;
-    guiaY0 = y0; guiaY1 = y1;
+    guiaRect.setAttribute("y", vy0.toFixed(1));
+    guiaTop = vy0; guiaY0 = y0; guiaY1 = y1; guiaAlto = -1; guiaListo = true;
   }
   addEventListener("resize", () => trazaHilo());
   const clamp01 = (x) => Math.min(1, Math.max(0, x));
@@ -538,12 +534,12 @@
     if (top < vh * 0.35) lugar.classList.add("visible");
     if (scrollY > 30) raiz.classList.add("leyendo", "desplazando");
     // Thread tip stays just past the bottom edge, so it always leads off-screen
-    if (guiaLen) {
+    if (guiaListo) {
       const punta = vh * 1.02 - regalo.getBoundingClientRect().top;
       const g = clamp01((punta - guiaY0) / (guiaY1 - guiaY0));
-      // Only touch the stroke when it changes: the watercolor filter is costly to repaint
-      const off = Math.round(guiaLen * (1 - g));
-      if (off !== guiaOffset) { guiaOffset = off; for (const el of guiaPaths) el.style.strokeDashoffset = off; }
+      // The thread is uncovered from the top down by growing a clip rectangle
+      const alto = Math.round(Math.max(0, Math.min(guiaY1 + 28 - guiaTop, punta - guiaTop)));
+      if (alto !== guiaAlto) { guiaAlto = alto; guiaRect.setAttribute("height", alto); }
       // If she pauses with the thread on screen, someone tugs the other end
       const quieta = now() - ultimoScroll > 2.2;
       raiz.classList.toggle("jala", !quieto && quieta && g > 0.02 && g < 0.97);
@@ -567,10 +563,50 @@
 
   // ---------- Password gate ----------
   const form = $("#puerta"), input = $("#clave");
-  const normaliza = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, "");
+  // Keep only letters and digits, no accents or case: "Te extraño, Luffy" and "teextranoluffy" are the same.
+  const normaliza = (s) => s.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  // SHA-256 without crypto.subtle (that API is missing in some in-app browsers and insecure contexts)
+  function sha256Puro(bytes) {
+    const primos = [];
+    for (let n = 2; primos.length < 64; n++) if (primos.every((p) => n % p)) primos.push(n);
+    const frac = (x) => ((x - Math.floor(x)) * 4294967296) >>> 0;
+    const K = primos.map((p) => frac(Math.cbrt(p)));
+    const H = primos.slice(0, 8).map((p) => frac(Math.sqrt(p)));
+    const largo = bytes.length, total = ((largo + 9 + 63) >> 6) << 6;
+    const buf = new Uint8Array(total);
+    buf.set(bytes); buf[largo] = 0x80;
+    const dv = new DataView(buf.buffer);
+    dv.setUint32(total - 8, Math.floor((largo * 8) / 4294967296));
+    dv.setUint32(total - 4, (largo * 8) >>> 0);
+    const w = new Uint32Array(64);
+    const rr = (x, n) => (x >>> n) | (x << (32 - n));
+    for (let o = 0; o < total; o += 64) {
+      for (let i = 0; i < 16; i++) w[i] = dv.getUint32(o + i * 4);
+      for (let i = 16; i < 64; i++) {
+        const s0 = rr(w[i - 15], 7) ^ rr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+        const s1 = rr(w[i - 2], 17) ^ rr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+      }
+      let [a, b, c, d, e, f, g, h] = H;
+      for (let i = 0; i < 64; i++) {
+        const t1 = (h + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) | 0;
+        const t2 = ((rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+        h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      [a, b, c, d, e, f, g, h].forEach((x, i) => { H[i] = (H[i] + x) | 0; });
+    }
+    return H.map((x) => (x >>> 0).toString(16).padStart(8, "0")).join("");
+  }
   async function sha256(s) {
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const bytes = new TextEncoder().encode(s);
+    try {
+      if (window.crypto && crypto.subtle) {
+        const buf = await crypto.subtle.digest("SHA-256", bytes);
+        return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      }
+    } catch (e) { /* fall through to the plain implementation */ }
+    return sha256Puro(bytes);
   }
 
   function entrar(animado) {
@@ -597,7 +633,9 @@
     e.preventDefault();
     const v = normaliza(input.value);
     if (!v) return;
-    if ((await sha256(v)) === HASH) { entrar(true); return; }
+    let bien = false;
+    try { bien = (await sha256(v)) === HASH; } catch (err) {}
+    if (bien) { entrar(true); return; }
     form.classList.remove("error"); void form.offsetWidth; form.classList.add("error");
     input.select();
   });
