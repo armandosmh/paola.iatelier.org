@@ -41,3 +41,9 @@
 - **Qué se hizo:** cuatro lugares que dio Armando, numerados en orden de caminata en los mapas (círculos naranja, posición indicativa): 1 Kyu Asakura House, 2 Sato Sakura Museum, 3 Traveler's Factory, 4 Naka-Meguro Park. Coordenadas de Nominatim salvo Traveler's Factory (ubicada por su dirección, 3-13-10 Kamimeguro). Nueva página 6 "Otros lugares lindos" con mapa ampliado y descripción de 3–4 líneas por lugar, con datos verificados en fuentes (horario de Traveler's Factory del sitio oficial; año de la casa Asakura y del parque de fuentes secundarias/ofic. del distrito). Etiqueta de Naka-meguro movida para no tapar el 3.
 - **Quedó a medias:** prueba en iPhone real.
 - **Commit:** este mismo commit, "Sesión: lugares opcionales en el mapa y página 6 del PDF"
+
+## 2026-11-04 — Hilo rojo guía y contraseña nueva
+- **Tipo:** espontáneo
+- **Qué se hizo:** un hilo rojo ondulado nace bajo la firma y se dibuja con el scroll hasta "Tu misión"; su punta queda justo bajo el borde de la pantalla para indicar que la página sigue. Si Paola se detiene más de ~2 s con el hilo en pantalla, el hilo da un tirón hacia abajo (desactivado con reduced-motion). Contraseña cambiada a pedido de Armando (solo cambia el hash; se normaliza sin acentos ni tilde). Probado en 375×812 y 1440×900; sin errores en consola.
+- **Quedó a medias:** prueba en iPhone real. Los navegadores que ya entraron con la contraseña anterior no la vuelven a pedir (localStorage).
+- **Commit:** este mismo commit, "Sesión: hilo rojo guía y contraseña nueva"

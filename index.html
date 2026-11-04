@@ -147,6 +147,12 @@
   .abierto .pista { opacity: .8; transition-delay: 3.2s; }
   .abierto.leyendo .pista { opacity: 0; transition-delay: 0s; }
 
+  /* Red thread from the signature down to the place; JS draws it with the scroll */
+  #hilo-guia { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; overflow: visible; }
+  #hilo-guia path { fill: none; stroke: var(--hilo); stroke-width: 2.2; stroke-linecap: round; opacity: .85; }
+  .jala #hilo-guia { animation: jala 2.6s ease-in-out infinite; }
+  @keyframes jala { 0%, 60%, 100% { transform: translateY(0); } 16% { transform: translateY(11px); } 30% { transform: translateY(2px); } 42% { transform: translateY(5px); } }
+
   /* Pure scene between the letter and the place */
   .respiro { height: 120dvh; }
 
@@ -186,6 +192,7 @@
     @keyframes aparece-quieto { from { opacity: 0; } }
     .lugar .aparece { filter: none; transform: none; }
     .pista::after { animation: none; top: 0; }
+    .jala #hilo-guia { animation: none; }
   }
 </style>
 </head>
@@ -212,6 +219,7 @@
 </main>
 
 <div id="regalo">
+  <svg id="hilo-guia" aria-hidden="true"><path/></svg>
   <article class="carta" aria-live="polite">
     <div class="tinta" style="--i:0">
       <h1>¡Feliz cumpleaños, Pao!</h1>
@@ -255,7 +263,7 @@
   "use strict";
 
   // SHA-256 of the normalized password. Not a secret: it only keeps the gift closed until the day.
-  const HASH = "27e74d0e746386afce8f21dcf0d34f34102243d5c5b7b49a64a16e3b25cdba40";
+  const HASH = "d0f98c9105df03056d3dba83d832f35de21626728075ae95d2f1e8d847f69b40";
   const STORE_KEY = "paola-dentro";
   const IMG_W = 2000, IMG_H = 1244;
   const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -455,6 +463,34 @@
   const raiz = document.documentElement;
   const carta = $(".carta"), lugar = $(".lugar"), hoja = $("#hoja"), pie = $("#pie");
   const tintas = [...document.querySelectorAll(".carta .tinta")];
+  const regalo = $("#regalo"), guia = $("#hilo-guia"), guiaPath = guia.querySelector("path");
+  const firma = $(".carta .firma"), destino = $(".lugar .kicker");
+  let guiaLen = 0, guiaY0 = 0, guiaY1 = 1, ultimoScroll = 0;
+  addEventListener("scroll", () => { ultimoScroll = now(); }, { passive: true });
+
+  // Wavy thread from under the signature to just above "Tu misión"
+  function trazaHilo() {
+    if (!abierto) return;
+    const base = regalo.getBoundingClientRect().top;
+    const f = firma.getBoundingClientRect(), k = destino.getBoundingClientRect();
+    const x0 = f.left + 3, y0 = f.bottom - base + 12;
+    const x1 = k.left + 3, y1 = k.top - base - 18;
+    const n = Math.max(2, Math.round((y1 - y0) / 320));
+    const amp = Math.min(90, innerWidth * 0.16);
+    let d = `M${x0} ${y0}`;
+    for (let i = 1; i <= n; i++) {
+      const ya = y0 + (y1 - y0) * (i - 1) / n, yb = y0 + (y1 - y0) * i / n;
+      const xa = x0 + (x1 - x0) * (i - 1) / n, xb = x0 + (x1 - x0) * i / n;
+      const a = i % 2 ? amp : -Math.min(amp * 0.8, Math.min(xa, xb) - 8); // never off the left edge
+      d += ` C${(xa + a).toFixed(1)} ${(ya + (yb - ya) * 0.35).toFixed(1)}, ${(xb + a).toFixed(1)} ${(ya + (yb - ya) * 0.65).toFixed(1)}, ${xb.toFixed(1)} ${yb.toFixed(1)}`;
+    }
+    guia.style.height = regalo.offsetHeight + "px"; // a zero-height SVG is not painted
+    guiaPath.setAttribute("d", d);
+    guiaLen = guiaPath.getTotalLength();
+    guiaPath.style.strokeDasharray = `${guiaLen} ${guiaLen}`;
+    guiaY0 = y0; guiaY1 = y1;
+  }
+  addEventListener("resize", () => trazaHilo());
   const clamp01 = (x) => Math.min(1, Math.max(0, x));
   let abierto = false;
   const suave = (x) => x * x * (3 - 2 * x);
@@ -484,6 +520,15 @@
     pie.style.opacity = clamp01((vh * 0.9 - top) / (vh * 0.6)).toFixed(3);
     if (top < vh * 0.35) lugar.classList.add("visible");
     if (scrollY > 30) raiz.classList.add("leyendo", "desplazando");
+    // Thread tip stays just past the bottom edge, so it always leads off-screen
+    if (guiaLen) {
+      const punta = vh * 1.02 - regalo.getBoundingClientRect().top;
+      const g = clamp01((punta - guiaY0) / (guiaY1 - guiaY0));
+      guiaPath.style.strokeDashoffset = (guiaLen * (1 - g)).toFixed(1);
+      // If she pauses with the thread on screen, someone tugs the other end
+      const quieta = now() - ultimoScroll > 2.2;
+      raiz.classList.toggle("jala", !quieto && quieta && g > 0.02 && g < 0.97);
+    }
   }
 
   let frameDt = 0;
@@ -515,6 +560,10 @@
     if (!animado) raiz.classList.add("sin-entrada");
     raiz.classList.add("abierto");
     abierto = true;
+    trazaHilo();
+    // Re-measure once fonts and the ink-settling animation are done
+    if (document.fonts) document.fonts.ready.then(trazaHilo);
+    setTimeout(trazaHilo, animado ? 5200 : 2200);
     if (animado && !quieto) {
       boost = 1.4;
       for (let i = 0; i < 26; i++) setTimeout(() => nuevaHoja(true), i * 45);
