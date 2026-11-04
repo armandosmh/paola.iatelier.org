@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="theme-color" content="#efe4d0">
 <meta property="og:title" content="Para Paola">
-<meta property="og:description" content="Próximamente">
+<meta property="og:description" content="Un regalo">
 <meta property="og:image" content="https://paola.iatelier.org/img/og.jpg">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M6 26C6 13 15 5 27 5c0 12-8 21-21 21z' fill='%23d4893a'/%3E%3Cpath d='M6 26L21 11' stroke='%239a4f22' stroke-width='1.6'/%3E%3C/svg%3E">
@@ -87,18 +87,101 @@
   @keyframes vibra { 30%{d:path("M2 7 C 80 1, 160 13, 240 3 S 300 9, 318 7")} 60%{d:path("M2 7 C 80 11, 160 2, 240 10 S 300 5, 318 7")} }
 
   .dentro .entrada { opacity: 0; transform: translate(60px, -14px) rotate(-2deg); filter: blur(6px); pointer-events: none; }
-  .pronto { opacity: 0; text-align: center; pointer-events: none; }
-  .pronto h1 { font-weight: 400; font-size: clamp(30px, 8.6vw, 52px); letter-spacing: .08em; line-height: 1.1; }
-  .pronto .hilo { width: min(220px, 60vw); margin: 10px auto 0; }
-  .pronto .hilo path { stroke-dasharray: 340; stroke-dashoffset: 340; }
-  .dentro .pronto { opacity: 1; transition-delay: 1.1s; }
-  .dentro .pronto .hilo path { stroke-dashoffset: 0; transition: stroke-dashoffset 2.4s ease 2s; }
+  .abierto main { visibility: hidden; transition: visibility 0s 2s; }
 
   .oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
+  /* ---------- Inside: scrollable gift ---------- */
+  .abierto body { overflow: visible; height: auto; overflow-x: hidden; }
+  #regalo { display: none; position: relative; }
+  .abierto #regalo { display: block; }
+
+  /* Full paper sheet behind the letter; JS fades it out as the letter washes away */
+  #hoja {
+    position: fixed; inset: 0; pointer-events: none; opacity: 0;
+    background:
+      radial-gradient(130% 100% at 50% 35%, rgba(0,0,0,0) 55%, rgba(110,80,45,.10) 100%),
+      var(--papel);
+    transition: opacity 1.6s ease .9s;
+  }
+  .abierto #hoja { opacity: var(--hoja, 1); }
+  .abierto.desplazando #hoja { transition: none; }
+  .sin-entrada #hoja { transition: opacity .6s ease; }
+
+  .carta {
+    max-width: 34em; margin: 0 auto;
+    padding: calc(env(safe-area-inset-top) + 15dvh) 28px 0;
+    font-size: clamp(17px, 2.1vw + 9px, 20px); line-height: 1.85;
+  }
+  .carta h1 { font-weight: 600; font-size: clamp(30px, 7.5vw, 46px); line-height: 1.15; letter-spacing: .02em; margin-bottom: .2em; }
+  .carta .hilo-corto { display: block; width: 72px; height: 10px; margin: 1.1em 0 1.6em; }
+  .carta .hilo-corto path { fill: none; stroke: var(--hilo); stroke-width: 1.4; stroke-linecap: round; }
+  .carta p + p { margin-top: 1.05em; }
+  .carta .mision { font-weight: 600; }
+  .carta .kicker { margin-top: 2.6em; font-size: .72em; letter-spacing: .32em; color: var(--hilo); }
+  .carta .firma { margin-top: 2.2em; color: var(--tinta-suave); font-size: .92em; }
+  /* Each block of ink: JS drives --w (0 = intact, 1 = washed away) */
+  .tinta {
+    --w: 0;
+    opacity: calc(1 - var(--w));
+    filter: blur(calc(var(--w) * 7px));
+    transform: translateY(calc(var(--w) * -16px)) scale(calc(1 + var(--w) * .025));
+    text-shadow: 0 0 calc(var(--w) * 14px) rgba(58, 47, 40, calc(var(--w) * .45));
+    will-change: opacity, filter, transform;
+  }
+  /* Ink settling onto the paper when the letter first appears */
+  .carta .tinta { animation: asienta 1.8s cubic-bezier(.2,.7,.2,1) backwards; animation-delay: calc(1.3s + var(--i, 0) * .22s); }
+  @keyframes asienta { from { opacity: 0; filter: blur(8px); transform: translateY(10px); } }
+  .sin-entrada .carta .tinta { animation-delay: calc(.1s + var(--i, 0) * .12s); }
+
+  .pista {
+    position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 22px);
+    width: 1px; height: 46px; margin-left: -.5px; overflow: hidden; pointer-events: none;
+    opacity: 0; transition: opacity .8s ease;
+  }
+  .pista::after { content: ""; position: absolute; left: 0; top: -46px; width: 1px; height: 46px; background: var(--hilo); animation: baja 2.4s ease-in-out infinite; }
+  @keyframes baja { 0% { top: -46px; } 60%, 100% { top: 46px; } }
+  .abierto .pista { opacity: .8; transition-delay: 3.2s; }
+  .abierto.leyendo .pista { opacity: 0; transition-delay: 0s; }
+
+  /* Pure scene between the letter and the place */
+  .respiro { height: 120dvh; }
+
+  .lugar {
+    min-height: 100dvh; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 28px calc(env(safe-area-inset-bottom) + 8dvh);
+  }
+  .lugar .bloque { max-width: 30em; margin: 0 auto; width: 100%; }
+  .lugar .kicker { font-size: 12px; letter-spacing: .32em; color: var(--hilo); margin-bottom: 10px; }
+  .lugar h2 { font-weight: 600; font-size: clamp(30px, 7vw, 44px); line-height: 1.1; }
+  .lugar .ja { color: var(--tinta-suave); letter-spacing: .12em; margin-top: 4px; font-size: 15px; }
+  .lugar p { margin-top: 16px; font-size: 17px; line-height: 1.7; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 24px; align-items: center; }
+  .acciones a { color: var(--tinta); text-decoration: none; font-size: 16px; letter-spacing: .04em; }
+  .acciones .principal {
+    display: inline-block; padding: 12px 20px; border: 1px solid var(--tinta);
+    background: rgba(244,236,221,.7);
+  }
+  .acciones .principal:hover { background: var(--tinta); color: var(--papel); }
+  .acciones .sec { border-bottom: 1px solid var(--hilo); padding-bottom: 2px; }
+  .lugar .aparece { opacity: 0; filter: blur(6px); transform: translateY(12px); transition: opacity 1.6s ease, filter 1.6s ease, transform 1.8s cubic-bezier(.2,.7,.2,1); }
+  .lugar.visible .aparece { opacity: 1; filter: none; transform: none; }
+  .lugar.visible .aparece:nth-child(2) { transition-delay: .25s; }
+  .lugar.visible .aparece:nth-child(3) { transition-delay: .5s; }
+  /* Stronger paper wash behind the place text at the bottom; JS sets its opacity */
+  #pie {
+    position: fixed; left: 0; right: 0; bottom: 0; height: 80dvh; pointer-events: none; opacity: 0;
+    background: linear-gradient(to bottom, rgba(244,236,221,0), rgba(244,236,221,.9) 42%, rgba(244,236,221,.97));
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .vista, .dentro .pronto .hilo path { transition: opacity .6s ease; }
+    .vista { transition: opacity .6s ease; }
     .dentro .entrada { transform: none; filter: none; }
+    .tinta { filter: none; transform: none; text-shadow: none; }
+    .carta .tinta { animation-name: aparece-quieto; }
+    @keyframes aparece-quieto { from { opacity: 0; } }
+    .lugar .aparece { filter: none; transform: none; }
+    .pista::after { animation: none; top: 0; }
   }
 </style>
 </head>
@@ -107,6 +190,8 @@
 <div id="respaldo" role="img" aria-label="Acuarela de un patio en otoño con un árbol dorado y una librería iluminada"></div>
 <canvas id="vida" aria-hidden="true"></canvas>
 <div class="papel"></div>
+<div id="pie"></div>
+<div id="hoja"></div>
 <div class="grano"></div>
 
 <main id="principal">
@@ -120,11 +205,43 @@
       <svg class="hilo" viewBox="0 0 320 14" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7 C 80 5, 160 9, 240 6 S 300 8, 318 7"/></svg>
     </form>
   </div>
-  <div class="vista pronto" aria-live="polite">
-    <h1>Próximamente</h1>
-    <svg class="hilo" viewBox="0 0 320 14" preserveAspectRatio="none" aria-hidden="true"><path d="M4 8 C 70 3, 130 12, 200 6 S 290 4, 316 9"/></svg>
-  </div>
 </main>
+
+<div id="regalo">
+  <article class="carta" aria-live="polite">
+    <div class="tinta" style="--i:0">
+      <h1>¡Feliz cumpleaños, Pao!</h1>
+      <svg class="hilo-corto" viewBox="0 0 72 10" aria-hidden="true"><path d="M2 5 C 20 2, 40 8, 70 4"/></svg>
+    </div>
+    <p class="tinta" style="--i:1">Esperamos que la estés pasando increíble en Japón.</p>
+    <p class="tinta" style="--i:2">Cuando Armando te propuso tener un quest como regalo, no estaba muy seguro de cómo se vería. Bastaron unos minutos de conversación con Ana para encontrar la respuesta.</p>
+    <p class="tinta" style="--i:3">T-Site es un lugar que encontramos casi de casualidad y fue una de nuestras experiencias favoritas de todo el viaje. La librería es hermosa y enorme. Los libros japoneses son joyas (Ana se arrepintió terriblemente de no comprar un manual japonés de cómo hacer tacos) y las calles alrededor están llenas de tiendas de diseño.</p>
+    <p class="tinta" style="--i:4">Así que esta es tu misión: <span class="mision">tienes 6 mil yenes para comprar lo que quieras en T-Site.</span> Ya dejamos en tu casa un sobre con el equivalente en pesos.</p>
+    <p class="tinta kicker" style="--i:5">QUEST +</p>
+    <p class="tinta" style="--i:5">A una estación de tren hay un río que pasa por el barrio que más nos gustó de Tokio: Nakameguro. Hay que caminar un poco, pero el río es precioso y, con un poco de suerte, estará lleno de árboles con hojas amarillas y rojizas.</p>
+    <p class="tinta" style="--i:6">Te queremos un montón. ¡Disfruta!</p>
+    <p class="tinta firma" style="--i:6">Ana y Armando</p>
+  </article>
+
+  <div class="respiro" aria-hidden="true"></div>
+
+  <section class="lugar" aria-labelledby="t-site">
+    <div class="bloque">
+      <div class="aparece">
+        <div class="kicker">TU MISIÓN</div>
+        <h2 id="t-site">Daikanyama T-Site</h2>
+        <div class="ja">代官山 蔦屋書店</div>
+      </div>
+      <p class="aparece">Tres edificios blancos cubiertos por una celosía de letras T, unidos por un pasillo de libros, revistas y música. Está a cinco minutos a pie de la estación Daikanyama.</p>
+      <div class="acciones aparece">
+        <a class="principal" href="pdf/como-llegar.pdf" download>Cómo llegar (PDF)</a>
+        <a class="sec" href="https://www.google.com/maps/search/?api=1&amp;query=Daikanyama+T-Site" target="_blank" rel="noopener">T-Site en el mapa</a>
+        <a class="sec" href="https://www.google.com/maps/search/?api=1&amp;query=Meguro+River+Nakameguro" target="_blank" rel="noopener">Río Meguro</a>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="pista" aria-hidden="true"></div>
 
 <script>
 (() => {
@@ -135,6 +252,7 @@
   const STORE_KEY = "paola-dentro";
   const IMG_W = 2000, IMG_H = 1244;
   const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual"; // always start at the letter
 
   const $ = (s) => document.querySelector(s);
   const main = $("#principal");
@@ -147,15 +265,21 @@
 
   // ---------- Framing: cover + slow pan ----------
   const frame = { s: 1, x: 0, y: 0, w: IMG_W, h: IMG_H };
+  let haciaLibreria = 0; // 0 = free ping-pong, 1 = settled on the bookstore (driven by scroll)
+  const respaldo = $("#respaldo");
   function updateFrame(t, vw, vh) {
     const s = Math.max(vw / IMG_W, vh / IMG_H);
     const dw = IMG_W * s, dh = IMG_H * s;
     const ox = dw - vw, oy = dh - vh;
     // Ping-pong pan between the tree and the bookstore (~80 s each way), starting slightly off the tree
-    const p = quieto ? 0.15 : 0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 160 + 0.8);
+    const libre = quieto ? 0.15 : 0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 160 + 0.8);
+    const k = haciaLibreria * haciaLibreria * (3 - 2 * haciaLibreria);
+    const LIBRERIA = 0.7; // pan position that centers the perforated facade
+    const p = libre + (LIBRERIA - libre) * k;
     frame.s = s; frame.w = dw; frame.h = dh;
     frame.x = -ox * p;
     frame.y = -oy * 0.35;
+    respaldo.style.backgroundPositionX = (p * 100).toFixed(1) + "%";
   }
   const toScreen = (u, v) => [frame.x + u * frame.w, frame.y + v * frame.h];
 
@@ -319,11 +443,39 @@
   addEventListener("resize", resize);
   resize();
 
+  // ---------- Inside: letter washes away on scroll, scene settles on the bookstore ----------
+  const raiz = document.documentElement;
+  const carta = $(".carta"), lugar = $(".lugar"), hoja = $("#hoja"), pie = $("#pie");
+  const tintas = [...document.querySelectorAll(".carta .tinta")];
+  const clamp01 = (x) => Math.min(1, Math.max(0, x));
+  let abierto = false, metaLibreria = 0;
+
+  function stepRegalo(dt) {
+    if (!abierto) return;
+    const vh = innerHeight;
+    // Each block of ink dissolves as it rises past the upper part of the screen
+    for (const el of tintas) {
+      const r = el.getBoundingClientRect();
+      const w = clamp01((vh * 0.14 - r.top) / (r.height * 0.8 + vh * 0.16));
+      el.style.setProperty("--w", w.toFixed(3));
+    }
+    // Then the paper itself washes off, revealing the scene
+    const q = clamp01((vh * 0.45 - carta.getBoundingClientRect().bottom) / (vh * 0.6));
+    hoja.style.setProperty("--hoja", (1 - q).toFixed(3));
+    metaLibreria = q;
+    haciaLibreria += (metaLibreria - haciaLibreria) * Math.min(1, dt * (quieto ? 6 : 1.2));
+    const top = lugar.getBoundingClientRect().top;
+    pie.style.opacity = clamp01((vh * 0.9 - top) / (vh * 0.6)).toFixed(3);
+    if (top < vh * 0.35) lugar.classList.add("visible");
+    if (scrollY > 30) raiz.classList.add("leyendo", "desplazando");
+  }
+
   let last = now();
   function loop() {
     const t = now();
     const dt = Math.min(0.05, t - last); last = t;
     boost = Math.max(0, boost - dt * 0.35);
+    stepRegalo(dt);
     updateFrame(t, innerWidth, innerHeight);
     drawScene(t, dpr);
     stepVida(t, dt);
@@ -342,6 +494,9 @@
   function entrar(animado) {
     main.classList.add("dentro");
     input.blur();
+    if (!animado) raiz.classList.add("sin-entrada");
+    raiz.classList.add("abierto");
+    abierto = true;
     if (animado && !quieto) {
       boost = 1.4;
       for (let i = 0; i < 26; i++) setTimeout(() => nuevaHoja(true), i * 45);
