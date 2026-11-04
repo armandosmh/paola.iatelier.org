@@ -47,3 +47,9 @@
 - **Qué se hizo:** un hilo rojo ondulado nace bajo la firma y se dibuja con el scroll hasta "Tu misión"; su punta queda justo bajo el borde de la pantalla para indicar que la página sigue. Si Paola se detiene más de ~2 s con el hilo en pantalla, el hilo da un tirón hacia abajo (desactivado con reduced-motion). Contraseña cambiada a pedido de Armando (solo cambia el hash; se normaliza sin acentos ni tilde). Probado en 375×812 y 1440×900; sin errores en consola.
 - **Quedó a medias:** prueba en iPhone real. Los navegadores que ya entraron con la contraseña anterior no la vuelven a pedir (localStorage).
 - **Commit:** este mismo commit, "Sesión: hilo rojo guía y contraseña nueva"
+
+## 2026-11-04 — Hilo guía como trazo de acuarela
+- **Tipo:** espontáneo
+- **Qué se hizo:** el hilo rojo guía pasó de línea lisa a trazo de acuarela (opción C de tres maquetadas en `_borrador/hilos.html`): lavado ancho rosa diluido + línea fina de pigmento, con filtro SVG de ondulación, desenfoque y poros de papel, en multiply. Mismo dibujado con scroll y tirón. El trazo solo se repinta cuando cambia (el filtro es costoso). Probado en 375×812 y 1440×900; ~60 fps en escritorio; sin errores en consola.
+- **Quedó a medias:** prueba en iPhone real (rendimiento del filtro en celular).
+- **Commit:** este mismo commit, "Sesión: hilo guía como trazo de acuarela"

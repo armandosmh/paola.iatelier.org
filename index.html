@@ -148,8 +148,12 @@
   .abierto.leyendo .pista { opacity: 0; transition-delay: 0s; }
 
   /* Red thread from the signature down to the place; JS draws it with the scroll */
-  #hilo-guia { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; overflow: visible; }
-  #hilo-guia path { fill: none; stroke: var(--hilo); stroke-width: 2.2; stroke-linecap: round; opacity: .85; }
+  #hilo-guia { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; overflow: visible; will-change: transform; }
+  #hilo-guia g { mix-blend-mode: multiply; }
+  #hilo-guia path { fill: none; stroke-linecap: round; }
+  /* Watercolor stroke: a wide diluted wash plus a thin line of settled pigment */
+  #hilo-guia .lavado { stroke: #cf8a7c; stroke-width: 6; opacity: .55; }
+  #hilo-guia .pigmento { stroke: #b0594c; stroke-width: 1.6; opacity: .55; transform: translateX(1.2px); }
   .jala #hilo-guia { animation: jala 2.6s ease-in-out infinite; }
   @keyframes jala { 0%, 60%, 100% { transform: translateY(0); } 16% { transform: translateY(11px); } 30% { transform: translateY(2px); } 42% { transform: translateY(5px); } }
 
@@ -219,7 +223,19 @@
 </main>
 
 <div id="regalo">
-  <svg id="hilo-guia" aria-hidden="true"><path/></svg>
+  <svg id="hilo-guia" aria-hidden="true">
+    <defs>
+      <filter id="acuarela-hilo" x="-30%" y="-2%" width="160%" height="104%">
+        <feTurbulence type="fractalNoise" baseFrequency=".04 .02" numOctaves="2" seed="7" result="ondas"/>
+        <feDisplacementMap in="SourceGraphic" in2="ondas" scale="5" result="corrido"/>
+        <feGaussianBlur in="corrido" stdDeviation=".7" result="suave"/>
+        <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="2" result="grano"/>
+        <feColorMatrix in="grano" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.1 1.35" result="poros"/>
+        <feComposite in="suave" in2="poros" operator="in"/>
+      </filter>
+    </defs>
+    <g filter="url(#acuarela-hilo)"><path class="lavado"/><path class="pigmento"/></g>
+  </svg>
   <article class="carta" aria-live="polite">
     <div class="tinta" style="--i:0">
       <h1>¡Feliz cumpleaños, Pao!</h1>
@@ -463,9 +479,9 @@
   const raiz = document.documentElement;
   const carta = $(".carta"), lugar = $(".lugar"), hoja = $("#hoja"), pie = $("#pie");
   const tintas = [...document.querySelectorAll(".carta .tinta")];
-  const regalo = $("#regalo"), guia = $("#hilo-guia"), guiaPath = guia.querySelector("path");
+  const regalo = $("#regalo"), guia = $("#hilo-guia"), guiaPaths = [...guia.querySelectorAll("path")];
   const firma = $(".carta .firma"), destino = $(".lugar .kicker");
-  let guiaLen = 0, guiaY0 = 0, guiaY1 = 1, ultimoScroll = 0;
+  let guiaLen = 0, guiaY0 = 0, guiaY1 = 1, guiaOffset = -1, ultimoScroll = 0;
   addEventListener("scroll", () => { ultimoScroll = now(); }, { passive: true });
 
   // Wavy thread from under the signature to just above "Tu misión"
@@ -485,9 +501,10 @@
       d += ` C${(xa + a).toFixed(1)} ${(ya + (yb - ya) * 0.35).toFixed(1)}, ${(xb + a).toFixed(1)} ${(ya + (yb - ya) * 0.65).toFixed(1)}, ${xb.toFixed(1)} ${yb.toFixed(1)}`;
     }
     guia.style.height = regalo.offsetHeight + "px"; // a zero-height SVG is not painted
-    guiaPath.setAttribute("d", d);
-    guiaLen = guiaPath.getTotalLength();
-    guiaPath.style.strokeDasharray = `${guiaLen} ${guiaLen}`;
+    for (const el of guiaPaths) el.setAttribute("d", d);
+    guiaLen = guiaPaths[0].getTotalLength();
+    for (const el of guiaPaths) el.style.strokeDasharray = `${guiaLen} ${guiaLen}`;
+    guiaOffset = -1;
     guiaY0 = y0; guiaY1 = y1;
   }
   addEventListener("resize", () => trazaHilo());
@@ -524,7 +541,9 @@
     if (guiaLen) {
       const punta = vh * 1.02 - regalo.getBoundingClientRect().top;
       const g = clamp01((punta - guiaY0) / (guiaY1 - guiaY0));
-      guiaPath.style.strokeDashoffset = (guiaLen * (1 - g)).toFixed(1);
+      // Only touch the stroke when it changes: the watercolor filter is costly to repaint
+      const off = Math.round(guiaLen * (1 - g));
+      if (off !== guiaOffset) { guiaOffset = off; for (const el of guiaPaths) el.style.strokeDashoffset = off; }
       // If she pauses with the thread on screen, someone tugs the other end
       const quieta = now() - ultimoScroll > 2.2;
       raiz.classList.toggle("jala", !quieto && quieta && g > 0.02 && g < 0.97);
