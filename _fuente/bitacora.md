@@ -35,3 +35,9 @@
 - **Qué se hizo:** aplicadas las notas y tachones de Armando sobre el PDF: portada "Una tarde en Daikanyama (y el río Meguro)" y "paseo opcional"; fuera frases de relleno en las rutas (Yoyogi/Harajuku, sótano 5, "transbordo confuso", "unos 15 minutos", intro de Ueno, "Mismo aviso", "Bonito", "desvío"); río Meguro reescrito; mapa sin los círculos de árboles ni las rutas a pie (y sin su leyenda); nota del mapa fuera, se dejó solo "© OpenStreetMap" dentro del mapa por la licencia ODbL. Sitio: nueva descripción de T-Site con la "pequeña Brooklyn".
 - **Quedó a medias:** otros lugares del mapa; prueba en iPhone real.
 - **Commit:** este mismo commit, "Sesión: ediciones de Armando al PDF y nueva descripción de T-Site"
+
+## 2026-11-04 — Lugares opcionales en el mapa
+- **Tipo:** espontáneo
+- **Qué se hizo:** cuatro lugares que dio Armando, numerados en orden de caminata en los mapas (círculos naranja, posición indicativa): 1 Kyu Asakura House, 2 Sato Sakura Museum, 3 Traveler's Factory, 4 Naka-Meguro Park. Coordenadas de Nominatim salvo Traveler's Factory (ubicada por su dirección, 3-13-10 Kamimeguro). Nueva página 6 "Otros lugares lindos" con mapa ampliado y descripción de 3–4 líneas por lugar, con datos verificados en fuentes (horario de Traveler's Factory del sitio oficial; año de la casa Asakura y del parque de fuentes secundarias/ofic. del distrito). Etiqueta de Naka-meguro movida para no tapar el 3.
+- **Quedó a medias:** prueba en iPhone real.
+- **Commit:** este mismo commit, "Sesión: lugares opcionales en el mapa y página 6 del PDF"

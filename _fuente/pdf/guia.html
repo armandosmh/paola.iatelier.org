@@ -48,6 +48,13 @@
   .estacion { font-weight: 600; }
   .alt { margin-top: 3mm; padding: 3mm 4mm; border-left: .5mm solid var(--hilo); background: rgba(212,137,58,.08); font-size: 8.6pt; }
 
+  /* Optional places */
+  .lugares { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 6mm; margin-top: 2mm; font-size: 8.3pt; line-height: 1.5; }
+  .lugares li { position: relative; padding-left: 7mm; }
+  .lugares .num { position: absolute; left: 0; top: .2mm; width: 5mm; height: 5mm; border-radius: 50%; background: #d4893a; color: #fffaf0; font-size: 7pt; font-weight: 600; text-align: center; line-height: 5mm; }
+  .lugares b { font-weight: 600; font-size: 9pt; }
+  .lugares .ja-c { display: block; color: var(--suave); font-size: 7.4pt; letter-spacing: .05em; }
+
   .nota { position: absolute; left: 14mm; right: 14mm; bottom: 15mm; font-size: 7.4pt; color: var(--suave); }
 </style>
 </head>
@@ -150,8 +157,32 @@
     <img src="mapa-base.png" alt="" style="width:190mm;height:141.8mm;left:-39mm;top:-33.9mm">
     <img src="mapa.svg" alt="" style="width:190mm;height:141.8mm;left:-39mm;top:-33.9mm">
   </div>
-  <!-- TODO: more places from Armando go here, numbered on the map, one line each -->
   <div class="folio"><span>Quest+</span><span>5</span></div>
+</section>
+
+<!-- 6. Optional places -->
+<section class="pag">
+  <div class="kicker">De paso</div>
+  <h2>Otros lugares lindos</h2>
+  <div class="ja">Entre T-Site y el río · ubicaciones aproximadas</div>
+  <div class="hilo"></div>
+
+  <div class="mapa" style="height:70mm">
+    <img src="mapa-base.png" alt="" style="width:168mm;height:125.4mm;left:-35.5mm;top:-41mm">
+    <img src="mapa.svg" alt="" style="width:168mm;height:125.4mm;left:-35.5mm;top:-41mm">
+  </div>
+
+  <ol class="lugares">
+    <li><span class="num">1</span><b>Kyu Asakura House</b> <span class="ja-c">旧朝倉家住宅</span>
+      Casa de madera de 1919, a tres minutos de T-Site, que sobrevivió al terremoto de 1923 y a la guerra. Tiene salones de tatami y un jardín con arces que en otoño se ponen rojos.</li>
+    <li><span class="num">2</span><b>Sato Sakura Museum</b> <span class="ja-c">郷さくら美術館</span>
+      Museo de pintura japonesa contemporánea (nihonga) junto al río Meguro. Buena parte de su colección son cerezos: ahí florecen todo el año.</li>
+    <li><span class="num">3</span><b>Traveler’s Factory</b> <span class="ja-c">トラベラーズファクトリー</span>
+      Papelería en un callejón, a tres minutos de la salida sur de Naka-meguro, dentro de una antigua fábrica de papel. Arriba se puede tomar café. Cierra los martes.</li>
+    <li><span class="num">4</span><b>Naka-Meguro Park</b> <span class="ja-c">中目黒公園</span>
+      Parque de barrio, tranquilo, a unos diez minutos al sureste de la estación. Tiene pasto amplio y una casita dedicada a las plantas y flores.</li>
+  </ol>
+  <div class="folio"><span>De paso</span><span>6</span></div>
 </section>
 
 </body>

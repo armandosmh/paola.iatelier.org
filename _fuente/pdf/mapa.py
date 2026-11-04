@@ -151,6 +151,26 @@ def station(key, ja, es, dx, dy, anchor="start"):
             + label(x + dx, y + dy + 36, ja, 31, "#7a6a5c", anchor))
 
 
+# Optional places, numbered in walking order from T-Site down to the river.
+# Positions are indicative: Nominatim for 1, 2 and 4; 3 is placed by its address
+# (3-13-10 Kamimeguro, 3 min from the south gate of Naka-meguro).
+LUGARES = [
+    (35.64744, 139.70079),  # 1 Kyu Asakura House
+    (35.64563, 139.69988),  # 2 Sato Sakura Museum
+    (35.64320, 139.69800),  # 3 Traveler's Factory Nakameguro
+    (35.64084, 139.70532),  # 4 Naka-Meguro Park
+]
+
+
+def lugares():
+    out = []
+    for i, (la, lo) in enumerate(LUGARES, 1):
+        x, y = xy(la, lo)
+        out.append(f'<circle cx="{x}" cy="{y}" r="19" fill="#d4893a" stroke="#f4ecdd" stroke-width="3"/>'
+                   + label(x, y + 9, str(i), 26, "#fffaf0", "middle", 'font-weight="600"'))
+    return "\n".join(out)
+
+
 rx, ry = river_pts[nearest(river_pts, xy(35.6470, 139.6925))]
 scale_px = round(500 / ((LON1 - LON0) * 111320 * np.cos(np.radians(35.65))) * W)
 
@@ -168,7 +188,8 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{
 {station("shibuya", "渋谷", "Shibuya", 22, -4)}
 {station("ebisu", "恵比寿", "Ebisu", 22, 12)}
 {station("daikanyama", "代官山", "Daikanyama", 24, 42)}
-{station("nakameguro", "中目黒", "Naka-meguro", -24, 50, "end")}
+{station("nakameguro", "中目黒", "Naka-meguro", -26, -6, "end")}
+{lugares()}
 <g transform="translate({tx},{ty})">
   <path d="M0 -40 C 16 -40 26 -27 26 -14 C 26 7 0 26 0 26 C 0 26 -26 7 -26 -14 C -26 -27 -16 -40 0 -40 Z" fill="#c0392b"/>
   {label(0, -6, "T", 26, "#f4ecdd", "middle", 'font-weight="600"')}
