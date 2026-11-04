@@ -13,7 +13,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M6 26C6 13 15 5 27 5c0 12-8 21-21 21z' fill='%23d4893a'/%3E%3Cpath d='M6 26L21 11' stroke='%239a4f22' stroke-width='1.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet">
 <style>
   :root {
     --papel: #f4ecdd;
@@ -111,14 +111,15 @@
   .carta {
     max-width: 34em; margin: 0 auto;
     padding: calc(env(safe-area-inset-top) + 15dvh) 28px 0;
-    font-size: clamp(17px, 2.1vw + 9px, 20px); line-height: 1.85;
+    font-family: "Cormorant Garamond", "Shippori Mincho", Georgia, serif; font-style: italic; font-weight: 500;
+    font-size: clamp(20px, 2.2vw + 11px, 23px); line-height: 1.7;
   }
-  .carta h1 { font-weight: 600; font-size: clamp(30px, 7.5vw, 46px); line-height: 1.15; letter-spacing: .02em; margin-bottom: .2em; }
+  .carta h1 { font-weight: 600; font-size: clamp(36px, 9vw, 54px); line-height: 1.15; letter-spacing: .02em; margin-bottom: .2em; }
   .carta .hilo-corto { display: block; width: 72px; height: 10px; margin: 1.1em 0 1.6em; }
   .carta .hilo-corto path { fill: none; stroke: var(--hilo); stroke-width: 1.4; stroke-linecap: round; }
   .carta p + p { margin-top: 1.05em; }
-  .carta .mision { font-weight: 600; }
-  .carta .kicker { margin-top: 2.6em; font-size: .72em; letter-spacing: .32em; color: var(--hilo); }
+  .carta .mision { font-weight: 700; }
+  .carta .kicker { margin-top: 2.6em; font: 400 13px "Shippori Mincho", serif; letter-spacing: .32em; color: var(--hilo); }
   .carta .firma { margin-top: 2.2em; color: var(--tinta-suave); font-size: .92em; }
   /* Each block of ink: JS drives --w (0 = intact, 1 = washed away) */
   .tinta {
@@ -126,7 +127,9 @@
     opacity: calc(1 - var(--w));
     filter: blur(calc(var(--w) * 7px));
     transform: translateY(calc(var(--w) * -16px)) scale(calc(1 + var(--w) * .025));
-    text-shadow: 0 0 calc(var(--w) * 14px) rgba(58, 47, 40, calc(var(--w) * .45));
+    text-shadow:
+      0 0 calc(var(--w) * 14px) rgba(58, 47, 40, calc(var(--w) * .45)),
+      0 0 14px rgba(244, 236, 221, var(--halo, 0)), 0 0 4px rgba(244, 236, 221, var(--halo, 0)), 0 0 1px rgba(244, 236, 221, var(--halo, 0));
     will-change: opacity, filter, transform;
   }
   /* Ink settling onto the paper when the letter first appears */
@@ -218,8 +221,9 @@
     <p class="tinta" style="--i:2">Cuando Armando te propuso tener un quest como regalo, no estaba muy seguro de cómo se vería. Bastaron unos minutos de conversación con Ana para encontrar la respuesta.</p>
     <p class="tinta" style="--i:3">T-Site es un lugar que encontramos casi de casualidad y fue una de nuestras experiencias favoritas de todo el viaje. La librería es hermosa y enorme. Los libros japoneses son joyas (Ana se arrepintió terriblemente de no comprar un manual japonés de cómo hacer tacos) y las calles alrededor están llenas de tiendas de diseño.</p>
     <p class="tinta" style="--i:4">Así que esta es tu misión: <span class="mision">tienes 6 mil yenes para comprar lo que quieras en T-Site.</span> Ya dejamos en tu casa un sobre con el equivalente en pesos.</p>
-    <p class="tinta kicker" style="--i:5">QUEST +</p>
+    <p class="tinta kicker" style="--i:5">QUEST+</p>
     <p class="tinta" style="--i:5">A una estación de tren hay un río que pasa por el barrio que más nos gustó de Tokio: Nakameguro. Hay que caminar un poco, pero el río es precioso y, con un poco de suerte, estará lleno de árboles con hojas amarillas y rojizas.</p>
+    <p class="tinta" style="--i:5"><span class="mision">Misión extra:</span> tómate una foto en un puente del río.</p>
     <p class="tinta" style="--i:6">Te queremos un montón. ¡Disfruta!</p>
     <p class="tinta firma" style="--i:6">Ana y Armando</p>
   </article>
@@ -268,7 +272,8 @@
 
   // ---------- Framing: cover + slow pan ----------
   const frame = { s: 1, x: 0, y: 0, w: IMG_W, h: IMG_H };
-  let haciaLibreria = 0; // 0 = free ping-pong, 1 = settled on the bookstore (driven by scroll)
+  let paneoMeta = null; // null = free ping-pong; a number = target pan set by scroll once inside
+  let paneo = null;
   const respaldo = $("#respaldo");
   function updateFrame(t, vw, vh) {
     const s = Math.max(vw / IMG_W, vh / IMG_H);
@@ -276,9 +281,9 @@
     const ox = dw - vw, oy = dh - vh;
     // Ping-pong pan between the tree and the bookstore (~80 s each way), starting slightly off the tree
     const libre = quieto ? 0.15 : 0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 160 + 0.8);
-    const k = haciaLibreria * haciaLibreria * (3 - 2 * haciaLibreria);
-    const LIBRERIA = 0.7; // pan position that centers the perforated facade
-    const p = libre + (LIBRERIA - libre) * k;
+    if (paneoMeta === null) paneo = libre;
+    else paneo += (paneoMeta - paneo) * Math.min(1, frameDt * (quieto ? 6 : 1.1));
+    const p = paneo;
     frame.s = s; frame.w = dw; frame.h = dh;
     frame.x = -ox * p;
     frame.y = -oy * 0.35;
@@ -451,7 +456,10 @@
   const carta = $(".carta"), lugar = $(".lugar"), hoja = $("#hoja"), pie = $("#pie");
   const tintas = [...document.querySelectorAll(".carta .tinta")];
   const clamp01 = (x) => Math.min(1, Math.max(0, x));
-  let abierto = false, metaLibreria = 0;
+  let abierto = false;
+  const suave = (x) => x * x * (3 - 2 * x);
+  const VELO_MIN = innerWidth < 700 ? 0.6 : 0.45; // paper opacity at the end of the letter
+  const ARBOL = 0.08, CENTRO = 0.38, LIBRERIA = 0.7; // pan stops: tree, middle, bookstore facade
 
   function stepRegalo(dt) {
     if (!abierto) return;
@@ -462,22 +470,29 @@
       const w = clamp01((vh * 0.14 - r.top) / (r.height * 0.8 + vh * 0.16));
       el.style.setProperty("--w", w.toFixed(3));
     }
-    // Then the paper itself washes off, revealing the scene
-    const q = clamp01((vh * 0.45 - carta.getBoundingClientRect().bottom) / (vh * 0.6));
-    hoja.style.setProperty("--hoja", (1 - q).toFixed(3));
-    metaLibreria = q;
-    haciaLibreria += (metaLibreria - haciaLibreria) * Math.min(1, dt * (quieto ? 6 : 1.2));
+    // While reading, the paper turns translucent and the postcard shows through,
+    // drifting from the tree toward the middle; after the last line the rest of
+    // the paper washes off and the scene pans to the bookstore.
+    const rc = carta.getBoundingClientRect();
+    const leido = suave(clamp01(-rc.top / Math.max(1, rc.height - vh * 0.7)));
+    const q = clamp01((vh * 0.45 - rc.bottom) / (vh * 0.6));
+    const velo = 1 - (1 - VELO_MIN) * leido;
+    hoja.style.setProperty("--hoja", (velo * (1 - q)).toFixed(3));
+    carta.style.setProperty("--halo", ((1 - velo) / (1 - VELO_MIN)).toFixed(3));
+    paneoMeta = ARBOL + (CENTRO - ARBOL) * leido + (LIBRERIA - CENTRO) * suave(q);
     const top = lugar.getBoundingClientRect().top;
     pie.style.opacity = clamp01((vh * 0.9 - top) / (vh * 0.6)).toFixed(3);
     if (top < vh * 0.35) lugar.classList.add("visible");
     if (scrollY > 30) raiz.classList.add("leyendo", "desplazando");
   }
 
+  let frameDt = 0;
   let last = now();
   function loop() {
     const t = now();
     const dt = Math.min(0.05, t - last); last = t;
     boost = Math.max(0, boost - dt * 0.35);
+    frameDt = dt;
     stepRegalo(dt);
     updateFrame(t, innerWidth, innerHeight);
     drawScene(t, dpr);

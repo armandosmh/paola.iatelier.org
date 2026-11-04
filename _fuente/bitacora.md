@@ -23,3 +23,9 @@
 - **Qué se hizo:** "T-Site en el mapa" y "Río Meguro" pasaron a su propia línea, debajo de "Cómo llegar (PDF)", también en escritorio. Revisado en 375×812 y 1440×900. Publicado con push.
 - **Quedó a medias:** nada nuevo.
 - **Commit:** este mismo commit, "Sesión: enlaces de mapa debajo del botón del PDF"
+
+## 2026-11-04 — Cursiva, Quest+ y postal revelada durante la lectura
+- **Tipo:** espontáneo
+- **Qué se hizo:** la carta pasó a Cormorant Garamond itálica (el resto del sitio sigue en Shippori Mincho); "QUEST +" → "QUEST+"; nueva línea "Misión extra: tómate una foto en un puente del río" en la carta y en la página 5 del PDF (también "Quest+"). Mientras se lee, el papel se vuelve translúcido (40% de escena en celular, 55% en escritorio) con halo de papel en el texto y la escena se mueve del árbol al centro; al terminar, se lava el papel y paneo final a la librería. Probado en 375×812 y 1440×900; sin errores en consola.
+- **Quedó a medias:** otros lugares del mapa; prueba en iPhone real.
+- **Commit:** este mismo commit, "Sesión: carta en cursiva, misión extra y postal revelada al leer"
