@@ -26,6 +26,7 @@
   .portada img { width: 100%; height: 128mm; object-fit: cover; object-position: 30% 40%; display: block; }
   .portada .lavado { position: absolute; top: 96mm; left: 0; right: 0; height: 34mm; background: linear-gradient(to bottom, rgba(244,236,221,0), var(--papel)); }
   .portada .txt { position: absolute; top: 132mm; left: 14mm; right: 14mm; }
+  .portada h1 .y { font-weight: 400; font-size: 13pt; color: var(--suave); white-space: nowrap; }
   .portada .sub { margin-top: 3mm; color: var(--suave); font-size: 10.5pt; }
 
   /* Map */
@@ -58,9 +59,9 @@
   <div class="lavado"></div>
   <div class="txt">
     <div class="kicker">Para Paola</div>
-    <h1>Una tarde en<br>Daikanyama</h1>
+    <h1>Una tarde en<br>Daikanyama <span class="y">(y el río Meguro)</span></h1>
     <div class="hilo"></div>
-    <p class="sub">Cómo llegar a T-Site desde Shinjuku o desde Ueno,<br>y un desvío por el río Meguro si hay ganas.</p>
+    <p class="sub">Cómo llegar a T-Site desde Shinjuku o desde Ueno,<br>y un paseo opcional por el río Meguro.</p>
   </div>
   <div class="folio"><span>代官山</span><span>Ana &amp; Armando</span></div>
 </section>
@@ -71,7 +72,7 @@
   <h2>Daikanyama T-Site</h2>
   <div class="ja">代官山 蔦屋書店 · Daikanyama, Shibuya</div>
   <div class="hilo"></div>
-  <p>Tres edificios blancos cubiertos por una celosía de letras T entrelazadas, unidos por un pasillo. Adentro hay libros, revistas, música y café. Se puede pasar ahí la tarde entera, sin prisa.</p>
+  <p>Tres edificios blancos cubiertos por una celosía de letras T entrelazadas, unidos por un pasillo. Adentro hay libros, revistas, música y café.</p>
 
   <div class="mapa">
     <img src="mapa-base.png" alt="">
@@ -81,10 +82,7 @@
     <span><i class="sw" style="border-color:#7fae4e"></i>JR Yamanote</span>
     <span><i class="sw" style="border-color:#c23b4a"></i>Tōkyū Tōyoko</span>
     <span><i class="sw" style="border-color:#9a9a92;border-top-style:dashed"></i>Metro Hibiya</span>
-    <span><i class="sw" style="border-color:#3a2f28;border-top-style:dotted"></i>a pie, directo</span>
-    <span><i class="sw" style="border-color:#c0392b;border-top-style:dotted"></i>a pie, por el río</span>
   </div>
-  <p class="nota">Mapa simplificado, sin todas las calles. Para moverse en vivo, Google Maps funciona bien en Tokio. Datos del mapa © colaboradores de OpenStreetMap.</p>
   <div class="folio"><span>17-5 Sarugakuchō, Shibuya · 渋谷区猿楽町17-5</span><span>2</span></div>
 </section>
 
@@ -94,17 +92,14 @@
   <h2>Desde Shinjuku</h2>
   <div class="ja">新宿 → 渋谷 → 代官山</div>
   <div class="hilo"></div>
-  <p>Un tren, un transbordo en Shibuya y una sola estación más.</p>
-
   <ol class="pasos">
     <li><span class="chip jy">JY</span>
       <b>JR Yamanote, dirección Shibuya / Shinagawa.</b><br>
-      Bajar en <span class="estacion">Shibuya 渋谷</span>, la tercera parada (Yoyogi y Harajuku antes).
+      Bajar en <span class="estacion">Shibuya 渋谷</span>.
       <div class="det">Los trenes JR Saikyō y Shōnan-Shinjuku también van directo a Shibuya.</div></li>
     <li><span class="chip pie">→</span>
       <b>Transbordo en Shibuya.</b><br>
-      Seguir los letreros de <span class="estacion">Tōkyū Tōyoko Line 東急東横線</span>. El andén está muy abajo, en el sótano 5: cuenta unos minutos de escaleras.
-      <div class="det">Es el transbordo más confuso del viaje; Shibuya sigue en obra y los pasillos cambian.</div></li>
+      Seguir los letreros de <span class="estacion">Tōkyū Tōyoko Line 東急東横線</span>.</li>
     <li><span class="chip ty">TY</span>
       <b>Tōyoko, tren local 各停, dirección Yokohama.</b><br>
       Bajar en la primera parada, <span class="estacion">Daikanyama 代官山</span>.
@@ -114,7 +109,7 @@
       Unos 5 minutos hacia el oeste, hasta la avenida Kyū-Yamate-dōri 旧山手通り.</li>
   </ol>
 
-  <div class="alt"><b>Otra opción:</b> JR Yamanote hasta <span class="estacion">Ebisu 恵比寿</span> y de ahí caminar por las calles de Daikanyama. Sin transbordo, pero es poco más de un kilómetro: unos 15 minutos a pie.</div>
+  <div class="alt"><b>Otra opción:</b> JR Yamanote hasta <span class="estacion">Ebisu 恵比寿</span> y de ahí caminar por las calles de Daikanyama. Sin transbordo, pero es poco más de un kilómetro.</div>
   <div class="folio"><span>Desde Shinjuku</span><span>3</span></div>
 </section>
 
@@ -124,8 +119,6 @@
   <h2>Desde Ueno</h2>
   <div class="ja">上野 → 中目黒 → 代官山</div>
   <div class="hilo"></div>
-  <p>La línea Hibiya va de Ueno a Naka-meguro sin transbordos: termina justo ahí. Desde Naka-meguro hay dos formas de seguir.</p>
-
   <ol class="pasos">
     <li><span class="chip h">H</span>
       <b>Tokyo Metro Hibiya, dirección Naka-meguro.</b><br>
@@ -133,10 +126,10 @@
     <li><span class="chip ty">TY</span>
       <b>Rápido: Tōyoko local, dirección Shibuya.</b><br>
       Una parada hasta <span class="estacion">Daikanyama 代官山</span> y 5 minutos a pie.
-      <div class="det">Mismo aviso: solo el local 各停 para en Daikanyama.</div></li>
+      <div class="det">Solo el local 各停 para en Daikanyama.</div></li>
     <li><span class="chip pie" style="border-color:var(--hilo);color:var(--hilo)">≈</span>
-      <b>Bonito: caminar por el río.</b><br>
-      Salir de Naka-meguro, bajar al río Meguro y subir la loma hasta T-Site. Es el desvío de la página siguiente.</li>
+      <b>Caminar por el río.</b><br>
+      Salir de Naka-meguro, bajar al río Meguro y subir la loma hasta T-Site.</li>
   </ol>
 
   <div class="alt"><b>Si estás cerca de JR:</b> la Yamanote también llega de Ueno a Shibuya o Ebisu, pero da media vuelta a la ciudad. La Hibiya es más directa.</div>
@@ -149,7 +142,7 @@
   <h2>El río Meguro</h2>
   <div class="ja">目黒川 · Naka-meguro</div>
   <div class="hilo"></div>
-  <p>A un par de minutos de la estación de Naka-meguro corre el río Meguro, angosto y encajonado, con árboles a los dos lados y cafés pequeños en la orilla. Camina río arriba lo que quieras y, en cualquier puente, sube la loma hacia Daikanyama: desde ahí Google Maps te lleva a T-Site.</p>
+  <p>A un par de minutos de la estación de Naka-meguro corre el río Meguro. Angosto y encajonado, con árboles a los dos lados y cafés pequeños en la orilla.</p>
   <p>En primavera es famoso por los cerezos. En otoño esos mismos árboles se ponen rojizos y las hojas caen al agua.</p>
   <p><b>Misión extra:</b> tómate una foto en un puente del río.</p>
 
@@ -158,7 +151,7 @@
     <img src="mapa.svg" alt="" style="width:190mm;height:141.8mm;left:-39mm;top:-33.9mm">
   </div>
   <!-- TODO: more places from Armando go here, numbered on the map, one line each -->
-  <div class="folio"><span>Desvío</span><span>5</span></div>
+  <div class="folio"><span>Quest+</span><span>5</span></div>
 </section>
 
 </body>

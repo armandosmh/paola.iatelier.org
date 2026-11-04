@@ -29,3 +29,9 @@
 - **Qué se hizo:** la carta pasó a Cormorant Garamond itálica (el resto del sitio sigue en Shippori Mincho); "QUEST +" → "QUEST+"; nueva línea "Misión extra: tómate una foto en un puente del río" en la carta y en la página 5 del PDF (también "Quest+"). Mientras se lee, el papel se vuelve translúcido (40% de escena en celular, 55% en escritorio) con halo de papel en el texto y la escena se mueve del árbol al centro; al terminar, se lava el papel y paneo final a la librería. Probado en 375×812 y 1440×900; sin errores en consola.
 - **Quedó a medias:** otros lugares del mapa; prueba en iPhone real.
 - **Commit:** este mismo commit, "Sesión: carta en cursiva, misión extra y postal revelada al leer"
+
+## 2026-11-04 — Ediciones de Armando al PDF y descripción de T-Site
+- **Tipo:** espontáneo
+- **Qué se hizo:** aplicadas las notas y tachones de Armando sobre el PDF: portada "Una tarde en Daikanyama (y el río Meguro)" y "paseo opcional"; fuera frases de relleno en las rutas (Yoyogi/Harajuku, sótano 5, "transbordo confuso", "unos 15 minutos", intro de Ueno, "Mismo aviso", "Bonito", "desvío"); río Meguro reescrito; mapa sin los círculos de árboles ni las rutas a pie (y sin su leyenda); nota del mapa fuera, se dejó solo "© OpenStreetMap" dentro del mapa por la licencia ODbL. Sitio: nueva descripción de T-Site con la "pequeña Brooklyn".
+- **Quedó a medias:** otros lugares del mapa; prueba en iPhone real.
+- **Commit:** este mismo commit, "Sesión: ediciones de Armando al PDF y nueva descripción de T-Site"

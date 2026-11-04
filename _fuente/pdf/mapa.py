@@ -121,7 +121,6 @@ def trees(d):
                 d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=255)
 
 
-img = wash(img, shape(trees, 2), (200, 120, 60), 0.38, 9)  # autumn: rust and gold
 
 glow = shape(lambda d: d.ellipse([tx - 70, ty - 55, tx + 70, ty + 55], fill=255), 14)
 img = wash(img, glow, (212, 137, 58), 0.9, 11)
@@ -161,8 +160,6 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{
 {polys(HIBIYA_TUN, 'stroke="#9a9a92" stroke-width="5" stroke-dasharray="10 9"')}
 {polys(HIBIYA_UP, 'stroke="#9a9a92" stroke-width="5"')}
 {polys(TOYOKO, 'stroke="#c23b4a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"')}
-<polyline points="{pts(DIRECTO)}" fill="none" stroke="#3a2f28" stroke-width="3.5" stroke-dasharray="2 8" stroke-linecap="round"/>
-<polyline points="{pts(PASEO)}" fill="none" stroke="#c0392b" stroke-width="4" stroke-dasharray="1 10" stroke-linecap="round" stroke-linejoin="round"/>
 {label(rx - 250, ry + 70, "目黒川 · río Meguro", 34, "#5f7f8c", "start", f'font-style="italic" letter-spacing="3" transform="rotate(32 {rx} {ry})"')}
 {label(xy(35.6545, 139.6929)[0] + 18, xy(35.6545, 139.6929)[1], "旧山手通り", 29)}
 {label(xy(35.6530, 139.7085)[0] + 14, xy(35.6530, 139.7085)[1], "JR Yamanote", 29, "#6d9440")}
@@ -185,6 +182,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{
   <line x1="0" y1="0" x2="{scale_px}" y2="0" stroke="#3a2f28" stroke-width="3"/>
   {label(0, -14, "500 m · unos 6 min a pie", 29)}
 </g>
+{label(W - 24, H - 22, "© OpenStreetMap", 22, "#9a8a7a", "end")}
 </svg>'''
 (HERE / "mapa.svg").write_text(svg, encoding="utf-8")
 print("map ok")
