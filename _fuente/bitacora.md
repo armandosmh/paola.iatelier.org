@@ -17,3 +17,9 @@
 - **Quedó a medias:** otros lugares del mapa (los da Armando); no se hizo push. No probado en un iPhone real.
 - **Commit:** este mismo commit, "Sesión: carta de cumpleaños y T-Site en la landing"
 - **Push (2026-11-04):** publicado en paola.iatelier.org (`7d24c1f`); verificado con curl que sirve la carta y `pdf/como-llegar.pdf` (200). También subieron los commits pendientes del QR.
+
+## 2026-11-04 — Enlaces de mapa bajo el botón
+- **Tipo:** espontáneo
+- **Qué se hizo:** "T-Site en el mapa" y "Río Meguro" pasaron a su propia línea, debajo de "Cómo llegar (PDF)", también en escritorio. Revisado en 375×812 y 1440×900. Publicado con push.
+- **Quedó a medias:** nada nuevo.
+- **Commit:** este mismo commit, "Sesión: enlaces de mapa debajo del botón del PDF"

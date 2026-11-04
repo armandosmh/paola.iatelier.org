@@ -164,6 +164,7 @@
   }
   .acciones .principal:hover { background: var(--tinta); color: var(--papel); }
   .acciones .sec { border-bottom: 1px solid var(--hilo); padding-bottom: 2px; }
+  .acciones .enlaces { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 12px 22px; }
   .lugar .aparece { opacity: 0; filter: blur(6px); transform: translateY(12px); transition: opacity 1.6s ease, filter 1.6s ease, transform 1.8s cubic-bezier(.2,.7,.2,1); }
   .lugar.visible .aparece { opacity: 1; filter: none; transform: none; }
   .lugar.visible .aparece:nth-child(2) { transition-delay: .25s; }
@@ -235,8 +236,10 @@
       <p class="aparece">Tres edificios blancos cubiertos por una celosía de letras T, unidos por un pasillo de libros, revistas y música. Está a cinco minutos a pie de la estación Daikanyama.</p>
       <div class="acciones aparece">
         <a class="principal" href="pdf/como-llegar.pdf" download>Cómo llegar (PDF)</a>
-        <a class="sec" href="https://www.google.com/maps/search/?api=1&amp;query=Daikanyama+T-Site" target="_blank" rel="noopener">T-Site en el mapa</a>
-        <a class="sec" href="https://www.google.com/maps/search/?api=1&amp;query=Meguro+River+Nakameguro" target="_blank" rel="noopener">Río Meguro</a>
+        <div class="enlaces">
+          <a class="sec" href="https://www.google.com/maps/search/?api=1&amp;query=Daikanyama+T-Site" target="_blank" rel="noopener">T-Site en el mapa</a>
+          <a class="sec" href="https://www.google.com/maps/search/?api=1&amp;query=Meguro+River+Nakameguro" target="_blank" rel="noopener">Río Meguro</a>
+        </div>
       </div>
     </div>
   </section>
