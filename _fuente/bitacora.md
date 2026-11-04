@@ -16,3 +16,4 @@
 - **Qué se hizo:** "Próximamente" sustituido por la carta de Ana y Armando (texto corregido, opción B) en pantalla de papel; al hacer scroll cada párrafo se lava como tinta, luego el papel, y la escena hace paneo hasta la fachada de la librería (`LIBRERIA = 0.7`). Abajo: T-Site con descarga del PDF y enlaces a Google Maps (T-Site y río Meguro). Firma "Ana y Armando" agregada. PDF: página 5 ahora "Quest +". Probado en 375×812 y 1440×900 en el navegador integrado; sin errores en consola.
 - **Quedó a medias:** otros lugares del mapa (los da Armando); no se hizo push. No probado en un iPhone real.
 - **Commit:** este mismo commit, "Sesión: carta de cumpleaños y T-Site en la landing"
+- **Push (2026-11-04):** publicado en paola.iatelier.org (`7d24c1f`); verificado con curl que sirve la carta y `pdf/como-llegar.pdf` (200). También subieron los commits pendientes del QR.
