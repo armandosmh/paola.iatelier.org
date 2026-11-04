@@ -13,7 +13,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M6 26C6 13 15 5 27 5c0 12-8 21-21 21z' fill='%23d4893a'/%3E%3Cpath d='M6 26L21 11' stroke='%239a4f22' stroke-width='1.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/escena.webp">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet"></noscript>
 <style>
   :root {
     --papel: #f4ecdd;
@@ -33,11 +35,8 @@
 
   /* Scene layers */
   #escena, #vida, #respaldo { position: fixed; inset: 0; width: 100%; height: 100%; }
-  #respaldo {
-    display: none;
-    background: url("img/escena.webp") 12% 40% / cover no-repeat;
-  }
-  .sin-webgl #respaldo { display: block; }
+  #respaldo { display: none; }
+  .sin-webgl #respaldo { display: block; background: url("img/escena.webp") 12% 40% / cover no-repeat; }
   .sin-webgl #escena { display: none; }
   #vida { pointer-events: none; }
 
@@ -49,8 +48,8 @@
       radial-gradient(120% 90% at 50% 30%, rgba(0,0,0,0) 60%, rgba(90,60,30,.10) 100%);
   }
   .grano {
-    position: fixed; inset: -50%; pointer-events: none; opacity: .22; mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    position: fixed; inset: 0; pointer-events: none; opacity: .35;
+    background: url("img/grano.png") 0 0 / 200px 200px;
   }
 
   /* Bottom area */
@@ -461,7 +460,7 @@
   let dpr = 1;
   function resize() {
     const small = Math.min(innerWidth, innerHeight) < 600;
-    dpr = Math.min(devicePixelRatio || 1, small ? 1.5 : 2);
+    dpr = Math.min(devicePixelRatio || 1, small ? 1 : 2);
     canvas.width = Math.round(innerWidth * dpr); canvas.height = Math.round(innerHeight * dpr);
     const d2 = Math.min(devicePixelRatio || 1, 2);
     vida.width = Math.round(innerWidth * d2); vida.height = Math.round(innerHeight * d2);

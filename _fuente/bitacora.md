@@ -59,3 +59,9 @@
 - **Qué se hizo:** en el iPhone de Armando la página se quedaba negra tras el despliegue del hilo de acuarela. Causa probable (no reproducida: esta Mac no tiene Xcode ni simulador): el filtro SVG (feTurbulence + desplazamiento + desenfoque + mezcla multiply) sobre un SVG de ~3 000 px de alto agota la memoria de la GPU del iPhone. El hilo anterior, sin filtro, sí se había visto bien en su celular. Ahora el hilo son tres trazos vectoriales (dos lavados y una línea de pigmento cortada) sin filtros ni blend; el SVG solo cubre el trazo, no toda la página, y se descubre con un rectángulo recortado. Además, la contraseña se normaliza a solo letras y dígitos (acepta mayúsculas, espacios y signos) y el SHA-256 tiene respaldo en JS puro para navegadores sin `crypto.subtle` (comprobado contra node en 11 casos).
 - **Quedó a medias:** confirmar en el iPhone de Armando que ya entra; sigue sin probarse en un iOS real.
 - **Commit:** este mismo commit, "Sesión: arreglo de pantalla negra en iPhone (hilo sin filtros)"
+
+## 2026-11-04 — Velocidad de carga
+- Grano: la capa SVG feTurbulence 200% con mix-blend-mode se cambió por un mosaico PNG estático (`img/grano.png`), sin blend.
+- Escena: `escena.webp` de 2000 a 1600 px (443 → 240 KB); WebGL a 1× en teléfono; el respaldo CSS solo carga si no hay WebGL; precarga de la imagen.
+- Fuentes de Google ya no bloquean el primer dibujo (media=print + onload).
+- Pendiente: si aún se traba al scroll, aligerar blur/text-shadow animados de la carta. No medido en iPhone real.
